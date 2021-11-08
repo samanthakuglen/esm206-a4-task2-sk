@@ -26,6 +26,8 @@ library(ggplot2)
 ```{r}
 # Store Bonanza Hares csv as new object `hare_data`, update date to YYYY-MM-DD format, and create new column `year`
 hare_data <- read_csv(here("data", "bonanza_hares.csv")) %>% 
+  mutate(date = mdy(date)) %>% 
+  mutate(year = year(date)) %>% 
   mutate(site_names = case_when(
     grid %in% c("bonrip") ~ "Bonanza Riparian",
     grid %in% c("bonmat") ~ "Bonanza Mature",
@@ -38,11 +40,9 @@ hare_data <- read_csv(here("data", "bonanza_hares.csv")) %>%
 # Count the total # of juvenile hare trappings during each year of the study
 
 juvenile_hare_counts <- hare_data %>%  
-  mutate(date = mdy(date)) %>% 
-  mutate(year = year(date)) %>% 
   filter(age =="j") %>% 
   group_by(year) %>% 
-  summarize(count = n()) %>% 
+  summarize(count = n()) 
 
 juvenile_hare_stats <- hare_data %>% 
   filter(age =="j") %>% 
@@ -58,9 +58,9 @@ juvenile_hare_stats <- hare_data %>%
 ## 3C - I: Juvenile Hare Data Visualization
 ```{r, fig.cap='cap'}
 # Finalized data visualization of the juvenile hare counts by year
-ggplot(yearly_hare_trappings, aes(x = year)) +
-  geom_histogram() + 
-  scale_x_continuous(1998:2012)
+ggplot(juvenile_hare_counts, aes(x = year, y = count)) +
+  geom_col() +
+  scale_x_continuous(breaks = 1999:2012)
 ```
 Major takeaways from the graph about total snowshoe hare trappings: 
 - The minimum and maximum counts of juvenile hare trappings
