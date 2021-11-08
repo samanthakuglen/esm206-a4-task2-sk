@@ -1,0 +1,94 @@
+---
+title: "Assignment 4 - Task 2"
+author: "Samantha Kuglen"
+date: "11/5/2021"
+output: html_document
+---
+## 3A) Overview
+
+**Data Citation: **
+
+## 3B) Data and Analysis
+
+## Setup
+```{r setup, include=FALSE, warning = FALSE, message = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+
+# Attach packages
+library(tidyverse)
+library(here)
+library(janitor)
+library(lubridate)
+library(ggplot2)
+```
+
+## Read in the Data
+```{r}
+# Store Bonanza Hares csv as new object `hare_data`, update date to YYYY-MM-DD format, and create new column `year`
+hare_data <- read_csv(here("data", "bonanza_hares.csv")) %>% 
+  mutate(site_names = case_when(
+    grid %in% c("bonrip") ~ "Bonanza Riparian",
+    grid %in% c("bonmat") ~ "Bonanza Mature",
+    grid %in% c("bonbs") ~ "Bonanza Lowland Black Spruce"
+  ))
+```
+
+## 3C - I: Juvenile Hare Initial Investigation
+```{r}
+# Count the total # of juvenile hare trappings during each year of the study
+
+juvenile_hare_counts <- hare_data %>%  
+  mutate(date = mdy(date)) %>% 
+  mutate(year = year(date)) %>% 
+  filter(age =="j") %>% 
+  group_by(year) %>% 
+  summarize(count = n()) %>% 
+
+juvenile_hare_stats <- hare_data %>% 
+  filter(age =="j") %>% 
+  summarize(hare_count = n(),
+            mean = mean(hare_count, na.RM = TRUE,),
+            median = median(hare_count, na.RM = TRUE),
+            sd = sd(hare_count),
+            max = max(hare_count),
+            min = min(hare_count))
+  
+```
+
+## 3C - I: Juvenile Hare Data Visualization
+```{r, fig.cap='cap'}
+# Finalized data visualization of the juvenile hare counts by year
+ggplot(yearly_hare_trappings, aes(x = year)) +
+  geom_histogram() + 
+  scale_x_continuous(1998:2012)
+```
+Major takeaways from the graph about total snowshoe hare trappings: 
+- The minimum and maximum counts of juvenile hare trappings
+- Mean and median annual number of juvenile hares trapped
+- Notable trends include
+- Moving forward, to standardize the juvenile hare population in future analyses
+
+## 3C - II: Visualize Juvenile Hare Weights
+```{r, fig.cap='cap'}
+# Finalized data visualizations comparing juvenile hare weights by sex and site (grid) and omitting other variables and including groups where variables are not recorded (`NA`)
+```
+
+Main takeaways from the graph: 
+
+## 3C - III: Juvenile Weight Comparison (Male & Female Snowshoe Hares)
+Further comparison of mean weights for **juvenile male and female snowshoe hares**
+```{r}
+# Finalized table containing the mean, standard deviation, and sample size for male and female juvenile snowshoe hares, with a table caption
+```
+Comparison of the means: 
+- The actual difference in means
+- Effect size (Cohen's *d*)
+- Outcome of an unpaired two-sample t-test
+
+## 3C - IV: Relationship Between Juvenile Weight & Hind Foot Length
+Exploration of the relationship between juvenile snowshoe hare hind foot length (mm) and weight of all juvenile hares in the study.
+```{r}
+# Final visualization of juvenile hare hind foot length versus weight.
+```
+
+
