@@ -26,7 +26,7 @@ library(effsize)
 ## Read in the Data
 ```{r}
 # Store Bonanza Hares csv as new object `hare_data`, update date to YYYY-MM-DD format, and create new column `year`
-juvenile_hare_data <- read_csv(here("data", "bonanza_hares.csv")) %>% 
+juvenile_hares <- read_csv(here("data", "bonanza_hares.csv")) %>% 
   filter(age =="j") %>% 
   mutate(date = mdy(date)) %>% 
   mutate(year = year(date)) %>% 
@@ -46,11 +46,11 @@ juvenile_hare_data <- read_csv(here("data", "bonanza_hares.csv")) %>%
 ```{r}
 # Count the total # of juvenile hare trappings during each year of the study
 
-juvenile_hare_counts <- juvenile_hare_data %>% 
+juvenile_hare_counts <- juvenile_hares %>% 
   group_by(year) %>% 
   summarize(sample_size = n()) 
 
-juvenile_hare_stats <- juvenile_hare_counts %>% 
+juvenile_hare_stats <- juvenile_hares %>% 
   summarize(mean = mean(sample_size),
             median = median(sample_size),
             sd = sd(sample_size),
@@ -94,7 +94,7 @@ Further comparison of mean weights for **juvenile male and female snowshoe hares
 ```{r}
 # Finalized table containing the mean, standard deviation, and sample size for male and female juvenile snowshoe hares, with a table caption
 
-ggplot(juvenile_hare_data) + 
+ggplot(juvenile_hares) + 
   geom_histogram(alpha = 0.7, aes(x = weight, fill = sex, color = sex)) + 
   facet_wrap(~site_names) +
   scale_fill_manual(values = c("#eba834", "#34b7eb", "grey")) +
@@ -104,7 +104,7 @@ ggplot(juvenile_hare_data) +
        title = "Juvenile Snowshoe Hare Weight Comparison (KUGLEN)") +
   theme(plot.title = element_text(hjust = 0.5))
   
-  juvenile_weight_stats <- juvenile_hare_data %>% 
+  juvenile_weight_stats <- juvenile_hares %>% 
     group_by(sex) %>% 
     select(sex, weight) %>% 
     summarize(mean = mean(weight, na.rm = TRUE),
@@ -121,7 +121,7 @@ Comparison of the means:
 Exploration of the relationship between juvenile snowshoe hare hind foot length (mm) and weight of all juvenile hares in the study.
 ```{r}
 # Final visualization of juvenile hare hind foot length versus weight.
-ggplot(juvenile_hare_data, aes(x = hindft, y = weight)) + 
+ggplot(juvenile_hares, aes(x = hindft, y = weight)) + 
   geom_point() + 
   labs(x = "Hind Foot Length (mm)",
        y = "Weight",
@@ -130,15 +130,15 @@ ggplot(juvenile_hare_data, aes(x = hindft, y = weight)) +
 ```
 
 ```{r}
-hare_lm <- lm(weight ~ hindft, data = juvenile_hare_data)
+hare_lm <- lm(weight ~ hindft, data = juvenile_hares)
 plot(hare_lm)
 
-male_hares <- juvenile_hare_data %>% 
+male_hares <- juvenile_hares %>% 
   filter(sex == "Male", age == "j") %>% 
   filter(!is.na(weight)) %>% 
   pull(weight)
 
-female_hares <- juvenile_hare_data %>% 
+female_hares <- juvenile_hares %>% 
   filter(sex == "Female", age == "j") %>% 
   filter(!is.na(weight)) %>% 
   pull(weight)
