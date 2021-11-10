@@ -25,6 +25,7 @@ library(janitor)
 library(lubridate)
 library(ggplot2)
 library(effsize)
+library(kableExtra)
 ```
 
 ```{r read in data}
@@ -54,9 +55,9 @@ hare_counts <- juvenile_hares %>%
 
 # Mean, median, max, min, of juvenile hares trapped
 hare_stats <- hare_counts %>% 
-  summarize(mean = mean(sample_size),
-            median = median(sample_size),
-            sd = sd(sample_size),
+  summarize(mean = round(mean(sample_size), 1),
+            median = round(median(sample_size), 1),
+            sd = round(sd(sample_size), 1),
             max = max(sample_size),
             min = min(sample_size)) 
   
@@ -87,32 +88,46 @@ Major takeaways from the graph about total snowshoe hare trappings:
 - Moving forward, to standardize the juvenile hare population in future analyses
 
 #### II: Comparison of juvenile hare weights
-Finalized data visualizations comparing juvenile hare weights by sex and site (grid) and omitting other variables and including groups where variables are not recorded (`NA`)
+Finalized data visualizations comparing juvenile hare weights by sex and site and omitting other variables and including groups where variables are not recorded (`NA`)
 ```{r, fig.cap='cap'}
 ggplot(juvenile_hares) + 
-  geom_histogram(alpha = 0.6, aes(x = weight, fill = sex, color = sex)) + 
+  geom_histogram(alpha = 0.5, aes(x = weight, fill = sex, color = sex)) + 
   facet_wrap(~site_names) +
-  scale_fill_manual(values = c("#de5b5b", "#5bb9de", "#6c7375")) +
-  scale_color_manual(values = c("#de5b5b", "#5bb9de", "#6c7375")) +
+  scale_fill_manual(values = c("#af85ff", "#5bb9de", "#6c7375")) +
+  scale_color_manual(values = c("#8c63db", "#4c9bba", "#474b4d")) +
   labs(x = "Weight (g)",
        y = "Count",
        title = "Juvenile Snowshoe Hare Weight Comparison (KUGLEN)",
-       subtitle = "1999 - 2012") +
-  theme(plot.title = element_text(hjust = 0.5))
+       subtitle = "1999 - 2012",
+       color = "Sex",
+       fill = "Sex") + # prevent redundant legend
+  theme(plot.title = element_text(hjust = 0.5)) +
+  theme(plot.subtitle = element_text(hjust = 0.5)) +
+  theme_linedraw()
 ```
 
 Main takeaways from the graph: 
 
 #### III: Descriptive statistics of juvenile weight comparison 
-Finalized table containing the mean, standard deviation, and sample size for male and female juvenile snowshoe hares, with a table caption
+Finalized table containing the mean, standard deviation, and sample size for male and female juvenile snowshoe hares.
+
+
+**Table 1.** Descriptive statistics (mean, standard deviation, and sample size) for male and female juvenile snowshoe hares. Data: Kielland, K., F.S. Chapin, R.W. Ruess, and Bonanza Creek LTER. 2017.
 ```{r}
 weight_stats <- juvenile_hares %>% 
     group_by(sex) %>% 
     select(sex, weight) %>% 
-    summarize(mean = mean(weight, na.rm = TRUE),
-              sd = sd(weight, na.rm = TRUE),
-              median = median(weight, na.rm = TRUE),
+    summarize(mean = round(mean(weight, na.rm = TRUE), 1),
+              sd = round(sd(weight, na.rm = TRUE), 1),
               hare_sample_size = n())
+
+kable(weight_stats, 
+      col = c("Sex",
+              "Mean Weight (g)",
+              "Standard Deviation",
+              "Sample Size")) %>% 
+      kable_styling(bootstrap_options = "striped", 
+                    full_width = FALSE)
 
 ```
 Comparison of the means: 
