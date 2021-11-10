@@ -4,18 +4,17 @@ author: "Samantha Kuglen"
 date: "11/5/2021"
 output: html_document
 ---
-### 3A: Overview
-This report is an exploratory review of counts and sizes of *Lepus americanus*, juvenile snowshoe hares, recorded at the [Bonanza Creek Experimental Forest (US Long Term Ecological Research Site)](https://www.lter.uaf.edu/) from 1998 - 2012. This report provides analyses on juvenile hare 1) annual trap counts, 2) weight comparison and 3) relationship between weight and hind foot length. This data is important because snowshoe hares are a keystone species in northern boreal forests. The purpose of this analysis is to explore reasons that this species may experience population fluctuations.
+### 3A. Overview
+This report is an exploratory review of counts and sizes of juvenile snowshoe hares (*Lepus americanus*), recorded at the [Bonanza Creek Experimental Forest (US Long Term Ecological Research Site)](https://www.lter.uaf.edu/) from 1998 - 2012. This report provides analyses on juvenile hare 1) annual trap counts, 2) weight comparison and 3) relationship between weight and hind foot length. This data is important because snowshoe hares are a keystone species in northern boreal forests. The purpose of this analysis is to explore reasons that this species may experience population fluctuations.
 
-### 3B: Data and Analysis
+### 3B. Data and Analysis
 - Describe Data
 
-#### Methods and Tools
+#### Statistical Methods and Tools
 
 **Data Citation: ** Kielland, K., F.S. Chapin, R.W. Ruess, and Bonanza Creek LTER. 2017. Snowshoe hare physical data in Bonanza Creek Experimental Forest: 1999-Present ver 22. Environmental Data Initiative. https://doi.org/10.6073/pasta/03dce4856d79b91557d8e6ce2cbcdc14
 
 
-### Setup
 ```{r setup, include=FALSE, warning = FALSE, message = FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
 
@@ -28,11 +27,10 @@ library(ggplot2)
 library(effsize)
 ```
 
-### Read in the Data
-```{r}
+```{r read in data}
 # Store Bonanza Hares csv as new object `hare_data`, update date to YYYY-MM-DD format, create new column `year`, add corresponding sex and site names 
 juvenile_hares <- read_csv(here("data", "bonanza_hares.csv")) %>% 
-  filter(age =="j") %>% 
+  filter(age == "j") %>% 
   mutate(date = mdy(date)) %>% 
   mutate(year = year(date)) %>% 
   mutate(site_names = case_when( # add new column for site names
@@ -47,7 +45,7 @@ juvenile_hares <- read_csv(here("data", "bonanza_hares.csv")) %>%
   ))
 ```
 
-### 3C - I: Juvenile Hare Initial Investigation
+
 ```{r}
 # Count the total # of juvenile hare trappings during each year of the study
 hare_counts <- juvenile_hares %>% 
@@ -64,7 +62,8 @@ hare_stats <- hare_counts %>%
   
 ```
 
-### 3C-I: Juvenile Hare Data Visualization
+### 3C. Preliminary results
+#### I: Data visualization of annual juvenile hare trap counts 
 ```{r, fig.cap='cap'}
 # Finalized data visualization of the juvenile hare counts by year
 ggplot(hare_counts, aes(x = year, y = sample_size)) +
@@ -87,7 +86,7 @@ Major takeaways from the graph about total snowshoe hare trappings:
 - Notable trends include
 - Moving forward, to standardize the juvenile hare population in future analyses
 
-### 3C-II: Visualize Juvenile Hare Weights
+#### II: Comparison of juvenile hare weights
 Finalized data visualizations comparing juvenile hare weights by sex and site (grid) and omitting other variables and including groups where variables are not recorded (`NA`)
 ```{r, fig.cap='cap'}
 ggplot(juvenile_hares) + 
@@ -104,8 +103,7 @@ ggplot(juvenile_hares) +
 
 Main takeaways from the graph: 
 
-### 3C-III: Juvenile Weight Comparison (Male & Female Snowshoe Hares)
-#### Comparison of mean weights and descriptive statistics
+#### III: Descriptive statistics of juvenile weight comparison 
 Finalized table containing the mean, standard deviation, and sample size for male and female juvenile snowshoe hares, with a table caption
 ```{r}
 weight_stats <- juvenile_hares %>% 
@@ -122,7 +120,7 @@ Comparison of the means:
 - Effect size (Cohen's *d*)
 - Outcome of an unpaired two-sample t-test
 
-### 3C-IV: Relationship Between Juvenile Weight & Hind Foot Length
+#### IV: Relationship between juvenile weight & hind foot length
 Exploration of the relationship between juvenile snowshoe hare hind foot length (mm) and weight of all juvenile hares in the study.
 ```{r}
 # Final visualization of juvenile hare hind foot length versus weight.
@@ -134,9 +132,8 @@ ggplot(juvenile_hares, aes(x = hindft, y = weight)) +
 
 ```
 
-### Linear Regression
 Linear Regression to describe how juvenile snowshoe hare weight changes with respect to hind foot length. 
-```{r}
+```{r linear regression }
 lm_hares <- lm(weight ~ hindft, data = juvenile_hares)
 plot(lm_hares)
 
@@ -161,4 +158,4 @@ t.test(male_hares, female_hares)
 
 ```
 
-
+### Summary
