@@ -161,7 +161,7 @@ qqnorm(male_hares) # slightly curved, mostly normal
 qqnorm(female_hares) # normal
 ```
 
-The mean for male weights (`r round(hare_ttest$estimate[1],1)` g) is greater than that of juvenile hares (`r round(hare_ttest$estimate[2],1)` g). The absolute difference in means is `r mean_difference`g and the difference is statistically significant (Welch's two-sample t-test: t = `r round(weight_t$statistic, 2`), p = 0.007). The effect size is small (Cohen's *d* = `r round(cohen_hares$estimate),1`)
+The mean for male weights (`r round(hare_ttest$estimate[1],1)` g) is greater than that of juvenile hares (`r round(hare_ttest$estimate[2],1)` g). The absolute difference in means is `r mean_difference`g and the difference is statistically significant (Welch's two-sample t-test: t = `r round(hare_ttest$statistic, 2`), p = 0.007). The effect size is small (Cohen's *d* = `r round(cohen_hares$estimate),1`)
 
 #### IV: Relationship between juvenile weight & hind foot length                                                                                     
 Exploration of the relationship between juvenile snowshoe hare hind foot length (mm) and weight of all juvenile hares in the study.
